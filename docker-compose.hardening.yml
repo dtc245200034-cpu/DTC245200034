@@ -1,0 +1,12 @@
+x-sec: &sec
+  security_opt: ["no-new-privileges:true"]
+  cap_drop: [ALL]
+services:
+  nginx:      { <<: *sec, read_only: true, tmpfs: [/tmp] }
+  app:        { <<: *sec, read_only: true, tmpfs: [/tmp], mem_limit: 512m, cpus: 1.0 }
+  grafana:    { <<: *sec }
+  prometheus: { <<: *sec }
+  nginx-exporter:  { <<: *sec }
+  mysqld-exporter: { <<: *sec }
+  db:         { security_opt: ["no-new-privileges:true"], mem_limit: 1g }
+  phpmyadmin: { security_opt: ["no-new-privileges:true"], mem_limit: 256m }
