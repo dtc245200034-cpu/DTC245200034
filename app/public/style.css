@@ -1,0 +1,6 @@
+body{background:#f5f7fb}
+.hero{background:linear-gradient(135deg,#4f46e5,#06b6d4)}
+.product{border-radius:18px;transition:.25s;overflow:hidden}
+.product:hover{transform:translateY(-6px);box-shadow:0 14px 30px rgba(79,70,229,.2)!important}
+.thumb{font-size:4.5rem;text-align:center;padding:24px;background:linear-gradient(135deg,#eef2ff,#ecfeff)}
+.price{color:#e11d48;font-weight:700;font-size:1.15rem}

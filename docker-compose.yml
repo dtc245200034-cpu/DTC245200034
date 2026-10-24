@@ -1,0 +1,54 @@
+name: techshop
+networks:
+  frontend: {}
+  backend: { internal: true }
+  monitoring: {}
+volumes: { dbdata: {} }
+
+services:
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      EXPORTER_PASSWORD: ${EXPORTER_PASSWORD}
+    volumes: [ "dbdata:/var/lib/mysql", "./db/init:/docker-entrypoint-initdb.d:ro" ]
+    networks: [backend]
+    healthcheck:
+      test: ["CMD-SHELL","mysqladmin ping -h localhost -uroot -p$$MYSQL_ROOT_PASSWORD"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: ./app
+    restart: unless-stopped
+    environment:
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      SESSION_SECRET: ${SESSION_SECRET}
+    depends_on: { db: { condition: service_healthy } }
+    networks: [frontend, backend, monitoring]
+
+  phpmyadmin:
+    image: phpmyadmin:5
+    restart: unless-stopped
+    environment: { PMA_HOST: db }
+    ports: ["127.0.0.1:8081:80"]        # chỉ truy cập từ máy local
+    depends_on: [db]
+    networks: [frontend, backend]
+
+  nginx:
+    image: nginxinc/nginx-unprivileged:stable-alpine
+    restart: unless-stopped
+    ports: ["80:8080", "443:8443"]
+    volumes:
+      - ./nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
+    depends_on: [app]
+    networks: [frontend, monitoring]

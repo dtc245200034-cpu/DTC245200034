@@ -1,0 +1,15 @@
+<%- include('header') %>
+<div class="container my-5"><h2 class="fw-bold mb-4">🛒 Giỏ hàng</h2>
+<% if(!items.length){ %><div class="alert alert-info">Giỏ hàng trống. <a href="/">Tiếp tục mua sắm</a></div><% } else { %>
+<div class="row g-4"><div class="col-md-7"><table class="table align-middle bg-white shadow-sm rounded">
+<% items.forEach(i=>{ %><tr><td class="fs-2"><%= i.emoji %></td><td><b><%= i.name %></b><br><small>SL: <%= i.qty %> × <%= vnd(i.price) %></small></td>
+<td class="fw-bold"><%= vnd(i.sub) %></td>
+<td><form method="post" action="/cart/remove/<%= i.id %>"><button class="btn btn-sm btn-outline-danger">✕</button></form></td></tr><% }) %>
+<tr><td colspan="2" class="text-end fw-bold">Tổng cộng</td><td colspan="2" class="price"><%= vnd(total) %></td></tr></table></div>
+<div class="col-md-5"><form method="post" action="/checkout" class="card p-4 border-0 shadow-sm">
+<h5 class="fw-bold mb-3">Thông tin giao hàng</h5>
+<input class="form-control mb-2" name="name" placeholder="Họ tên" required>
+<input class="form-control mb-2" name="phone" placeholder="Số điện thoại" required>
+<textarea class="form-control mb-3" name="address" placeholder="Địa chỉ" required></textarea>
+<button class="btn btn-success btn-lg rounded-pill">Đặt hàng</button></form></div></div><% } %></div>
+<%- include('footer') %>

@@ -1,0 +1,2 @@
+{ "name":"techshop","version":"1.0.0","main":"app.js",
+  "dependencies":{"express":"^4.19.2","ejs":"^3.1.10","mysql2":"^3.9.7","express-session":"^1.18.0","prom-client":"^15.1.0"} }
